@@ -23,4 +23,4 @@ jobs:
 
     - name: Run the code
       run: |
-        python import tkinter as tk.py # Replace with the script you want to run
+        python main.py # Replace with the script you want to run
