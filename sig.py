@@ -18,14 +18,14 @@ def browsefunc(ent):
     ent.insert(tk.END, filename)
 
 def capture_image_from_cam_into_temp(sign=1):
-    cam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cam = cv2.VideoCapture(0)
 
     cv2.namedWindow("test")
 
     while True:
         ret, frame = cam.read()
         if not ret:
-            print("failed to grab frame")
+            print("Failed to grab frame")
             break
         cv2.imshow("test", frame)
 
@@ -36,37 +36,39 @@ def capture_image_from_cam_into_temp(sign=1):
         elif k % 256 == 32:
             if not os.path.isdir('temp'):
                 os.mkdir('temp', mode=0o777)
-            if(sign == 1):
-                img_name = "./temp/test_img1.png"
+            if sign == 1:
+                img_name = os.path.join("temp", "test_img1.png")
             else:
-                img_name = "./temp/test_img2.png"
-            print('imwrite=', cv2.imwrite(filename=img_name, img=frame))
-            print("{} written!".format(img_name))
+                img_name = os.path.join("temp", "test_img2.png")
+            cv2.imwrite(img_name, frame)
+            print(f"{img_name} written!")
+            break
+
     cam.release()
     cv2.destroyAllWindows()
     return True
 
 def captureImage(ent, sign=1):
-    if(sign == 1):
-        filename = os.getcwd()+'\\temp\\test_img1.png'
-    else:
-        filename = os.getcwd()+'\\temp\\test_img2.png'
     res = messagebox.askquestion(
         'Click Picture', 'Press Space Bar to click picture and ESC to exit')
     if res == 'yes':
         capture_image_from_cam_into_temp(sign=sign)
+        if sign == 1:
+            filename = os.path.join(os.getcwd(), 'temp', 'test_img1.png')
+        else:
+            filename = os.path.join(os.getcwd(), 'temp', 'test_img2.png')
         ent.delete(0, tk.END)
         ent.insert(tk.END, filename)
     return True
 
 def checkSimilarity(window, path1, path2):
     result = match(path1=path1, path2=path2)
-    if(result <= THRESHOLD):
+    if result <= THRESHOLD:
         messagebox.showerror("Failure: Signatures Do Not Match",
-                             "Signatures are "+str(result)+f" % similar!!")
+                             f"Signatures are {result} % similar!!")
     else:
         messagebox.showinfo("Success: Signatures Match",
-                            "Signatures are "+str(result)+f" % similar!!")
+                            f"Signatures are {result} % similar!!")
     return True
 
 def match(path1, path2):
@@ -74,7 +76,7 @@ def match(path1, path2):
     img2 = cv2.imread(path2, cv2.IMREAD_GRAYSCALE)
     img1 = cv2.resize(img1, (300, 300))
     img2 = cv2.resize(img2, (300, 300))
-    similarity_value = "{:.2f}".format(ssim(img1, img2)*100)
+    similarity_value = "{:.2f}".format(ssim(img1, img2) * 100)
     return float(similarity_value)
 
 def create_gui():
@@ -111,7 +113,7 @@ def create_gui():
     img2_browse_button.grid(row=1, column=3)
 
     compare_button = tk.Button(root, text="Compare",
-                                command=lambda: checkSimilarity(window=root,
+                               command=lambda: checkSimilarity(window=root,
                                                                path1=image1_path_entry.get(),
                                                                path2=image2_path_entry.get()))
     compare_button.grid(row=2, column=1)
