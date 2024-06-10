@@ -4,6 +4,7 @@ from tkinter import messagebox
 import os
 import cv2
 from skimage.metrics import structural_similarity as ssim
+import sys
 
 # Match Threshold
 THRESHOLD = 85
@@ -121,4 +122,14 @@ def create_gui():
     root.mainloop()
 
 if __name__ == "__main__":
-    create_gui()
+    if 'nogui' in sys.argv:
+        # Test mode without GUI
+        path1 = os.path.join(os.getcwd(), 'temp', 'test_img1.png')
+        path2 = os.path.join(os.getcwd(), 'temp', 'test_img2.png')
+        if os.path.exists(path1) and os.path.exists(path2):
+            result = match(path1, path2)
+            print(f"Signatures are {result} % similar!!")
+        else:
+            print("Test images not found. Make sure to capture the images first.")
+    else:
+        create_gui()
