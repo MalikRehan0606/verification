@@ -8,7 +8,7 @@ app.use(express.static('public'));
 app.get('/verify', async (req, res) => {
   try {
     
-    const response = await axios.post('https://api.github.com/verification/MalikRehan0606/verify-button/actions/workflows/verify.yml/dispatches', {
+    const response = await axios.post('https://api.github.com/MalikRehan0606/verification/actions/workflows/python-app.yml.yml/dispatches', {
       ref: 'main'
     }, {
       headers: {
